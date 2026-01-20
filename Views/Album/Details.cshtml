@@ -39,6 +39,7 @@
                     bool canVote = User.Identity?.IsAuthenticated ?? false;
                     int volumeLevel = Model.UserRating ?? (int)Math.Round(Model.AverageRating);
                 }
+                <div id="volume-feedback" style="height: 20px; color: var(--color-accent); font-size: 0.8rem; font-weight: 600;"></div>
                 <!-- Add hidden input for JS to know current album -->
                 <input type="hidden" id="current-album-id" value="@Model.Album.Id" />
                 @await Html.PartialAsync("_VolumeBar", volumeLevel, new ViewDataDictionary(ViewData) { { "Interactive", canVote }, { "Large", true } })

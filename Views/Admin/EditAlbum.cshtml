@@ -1,0 +1,70 @@
+@model VolumeWeb.Models.Album
+
+@{
+    ViewData["Title"] = "Edit Album";
+}
+
+<h1 style="margin-bottom: 2rem;">Edit Album</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditAlbum" style="background: var(--color-panel); padding: 2rem; border: 1px solid var(--color-panel-light);">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label asp-for="Title" class="control-label" style="display: block; margin-bottom: 0.5rem;">Title</label>
+                <input asp-for="Title" class="form-control" style="background: #222; border: 1px solid #444; color: white;" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+             <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label asp-for="ReleaseYear" class="control-label" style="display: block; margin-bottom: 0.5rem;">Release Year</label>
+                <input asp-for="ReleaseYear" class="form-control" style="background: #222; border: 1px solid #444; color: white;" />
+                <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+            </div>
+
+             <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label asp-for="CoverUrl" class="control-label" style="display: block; margin-bottom: 0.5rem;">Cover URL</label>
+                <input asp-for="CoverUrl" class="form-control" style="background: #222; border: 1px solid #444; color: white;" />
+                <span asp-validation-for="CoverUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="control-label" style="display: block; margin-bottom: 0.5rem;">Artists</label>
+                <div id="artist-container">
+                    @if (Model.Artists.Any())
+                    {
+                        foreach (var artist in Model.Artists)
+                        {
+                            <div class="artist-row" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <select name="artistIds" class="form-control" asp-items="ViewBag.Artists" style="background: #222; border: 1px solid #444; color: white;">
+                                    <option value="@artist.Id" selected>@artist.Name</option>
+                                </select>
+                                <button type="button" class="btn btn-danger btn-sm remove-btn">×</button>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <!-- Fallback if no artists -->
+                        <div class="artist-row" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <select name="artistIds" class="form-control" asp-items="ViewBag.Artists" style="background: #222; border: 1px solid #444; color: white;"></select>
+                        </div>
+                    }
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addArtistRow()">+ Add Another Artist</button>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" style="background-color: var(--color-accent); border: none;" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ArtistDynamicScript");}
+}

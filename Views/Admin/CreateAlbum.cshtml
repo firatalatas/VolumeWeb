@@ -1,0 +1,53 @@
+@model VolumeWeb.Models.Album
+
+@{
+    ViewData["Title"] = "Create Album";
+}
+
+<div class="container" style="max-width: 600px;">
+    <h1>Add New Album</h1>
+    <div style="background-color: var(--color-panel); padding: 2rem; margin-top: 1rem;">
+        <form asp-action="CreateAlbum">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label class="control-label" style="display:block; margin-bottom:0.5rem;">Artists</label>
+                <div id="artist-container">
+                    <!-- Initial Row -->
+                    <div class="artist-row" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <select name="artistIds" class="form-control" asp-items="ViewBag.Artists"></select>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addArtistRow()">+ Add Another Artist</button>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label asp-for="Title" class="control-label" style="display:block; margin-bottom:0.5rem;">Album Title</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label asp-for="ReleaseYear" class="control-label" style="display:block; margin-bottom:0.5rem;">Release Year</label>
+                <input asp-for="ReleaseYear" class="form-control" />
+                <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label asp-for="CoverUrl" class="control-label" style="display:block; margin-bottom:0.5rem;">Cover Image URL</label>
+                <input asp-for="CoverUrl" class="form-control" placeholder="https://..." />
+                <span asp-validation-for="CoverUrl" class="text-danger"></span>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <input type="submit" value="Create Album" class="btn-primary" />
+                <a asp-action="Index" style="margin-left: 1rem; color: var(--color-text-muted);">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ArtistDynamicScript");}
+}

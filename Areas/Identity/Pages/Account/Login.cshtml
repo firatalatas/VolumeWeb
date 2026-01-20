@@ -1,0 +1,46 @@
+@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="container" style="max-width: 400px; margin-top: 4rem;">
+    <div style="background-color: var(--color-panel-light); padding: 2rem; border-radius: 8px;">
+        <h2 style="text-align: center; color: var(--color-accent); margin-bottom: 2rem; text-transform:uppercase; letter-spacing:1px;">@ViewData["Title"]</h2>
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert" style="margin-bottom: 1rem;"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" style="margin-bottom: 1rem;" />
+                <label asp-for="Input.Email" class="form-label" style="display:none;">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" style="margin-bottom: 1rem;" />
+                <label asp-for="Input.Password" class="form-label" style="display:none;">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="checkbox mb-3" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <input class="form-check-input" asp-for="Input.RememberMe" style="width: auto; margin: 0;" />
+                <label class="form-check-label" asp-for="Input.RememberMe" style="color: var(--color-text-muted);">
+                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                </label>
+            </div>
+            <div style="text-align: center;">
+                <button id="login-submit" type="submit" class="btn btn-primary" style="width: 100%;">Log in</button>
+            </div>
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+                <p>
+                    <a id="forgot-password" asp-page="./ForgotPassword" style="color: var(--color-text-muted);">Forgot your password?</a>
+                </p>
+                <p>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" style="color: var(--color-accent);">Register as a new user</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

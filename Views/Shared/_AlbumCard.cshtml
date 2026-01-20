@@ -1,0 +1,17 @@
+@model VolumeWeb.Models.Album
+
+<div class="album-card" style="transition: transform 0.2s;">
+    <a asp-controller="Album" asp-action="Details" asp-route-id="@Model.Id" style="display: block; position: relative;">
+        <!-- Cover -->
+        <div style="position: relative; aspect-ratio: 1/1; overflow: hidden; background-color: var(--color-panel);">
+             <img src="@Model.CoverUrl" alt="@Model.Title" style="width: 100%; height: 100%; object-fit: cover;" />
+        </div>
+        
+        <!-- Info -->
+        <div style="padding-top: 0.8rem;">
+            <div style="font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@Model.Title</div>
+            <div style="font-size: 0.9rem; color: var(--color-accent);">@string.Join(", ", Model.Artists.Select(a => a.Name))</div>
+            <div style="font-size: 0.8rem; color: var(--color-text-muted);">@Model.ReleaseYear</div>
+        </div>
+    </a>
+</div>

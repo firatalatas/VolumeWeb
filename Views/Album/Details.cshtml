@@ -1,0 +1,158 @@
+@model VolumeWeb.ViewModels.AlbumDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Album.Title;
+}
+
+<div class="album-detail-container" style="display: flex; gap: 4rem; margin-top: 2rem;">
+    <!-- Left: Cover Art -->
+    <div class="album-cover-section" style="flex: 0 0 400px;">
+        <div style="position: relative;">
+            <img src="@Model.Album.CoverUrl" alt="@Model.Album.Title Cover" style="width: 100%; box-shadow: 0 0 30px rgba(0,0,0,0.5); border: 1px solid var(--color-panel-light);" />
+            
+            <!-- Heart Icon -->
+            <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); padding: 0.5rem; border-radius: 50%; cursor: pointer;" 
+                 onclick="toggleFavorite(@Model.Album.Id)">
+                <span id="heart-icon-@Model.Album.Id" style="color: @(Model.IsFavorited ? "var(--color-accent)" : "white"); font-size: 1.5rem;">
+                    @(Model.IsFavorited ? "♥" : "♡")
+                </span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; text-align: center;">
+            <h2 style="font-weight: 900; text-transform: uppercase; margin-bottom: 0.5rem;">@Model.Album.Title</h2>
+            <h3 style="color: var(--color-text-muted); font-size: 1.2rem; margin-bottom: 2rem;">
+                @foreach (var artist in Model.Album.Artists)
+                {
+                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@artist.Id">@artist.Name</a>@(artist != Model.Album.Artists.Last() ? ", " : "")
+                }
+                 • @Model.Album.ReleaseYear
+            </h3>
+            
+            <!-- AVERAGE RATING (Read-Only) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: var(--color-text-muted);">
+                    Average Rating
+                </div>
+                
+                @{
+                    bool canVote = User.Identity?.IsAuthenticated ?? false;
+                    int volumeLevel = Model.UserRating ?? (int)Math.Round(Model.AverageRating);
+                }
+                <!-- Add hidden input for JS to know current album -->
+                <input type="hidden" id="current-album-id" value="@Model.Album.Id" />
+                @await Html.PartialAsync("_VolumeBar", volumeLevel, new ViewDataDictionary(ViewData) { { "Interactive", canVote }, { "Large", true } })
+                
+                <div style="color: var(--color-accent); font-weight: bold;">
+                    Average: @(Model.RatingCount > 0 ? Model.AverageRating.ToString("0.0") : "—") / 16
+                </div>
+                <div style="color: var(--color-text-muted); font-size: 0.8rem;">
+                    Votes: @Model.RatingCount
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Album Details & Reviews -->
+    <div class="album-content-section" style="flex: 1;">
+        <div style="margin-bottom: 3rem;">
+            <h4 style="border-bottom: 1px solid var(--color-panel-light); padding-bottom: 0.5rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Album Details</h4>
+            
+            <dl style="display: grid; grid-template-columns: 150px 1fr; gap: 0.5rem; color: var(--color-text-muted);">
+                <dt style="font-weight: 600; color: white;">Release Date</dt>
+                <dd>@(Model.Album.ReleaseDate?.ToString("MMMM dd, yyyy") ?? "—")</dd>
+
+                <dt style="font-weight: 600; color: white;">Label</dt>
+                <dd>@(Model.Album.Label ?? "—")</dd>
+
+                <dt style="font-weight: 600; color: white;">Runtime</dt>
+                <dd>@(Model.Album.Runtime ?? "—")</dd>
+            </dl>
+            
+            @if (!string.IsNullOrEmpty(Model.Album.Description))
+            {
+                <div style="margin-top: 1rem; color: var(--color-text-muted); line-height: 1.6;">
+                    @Model.Album.Description
+                </div>
+            }
+        </div>
+        
+        <!-- Add Review Section -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div style="margin-bottom: 2rem; background: var(--color-panel-light); padding: 1.5rem; border-radius: 8px;">
+                <h5 style="margin-bottom: 1rem; color: var(--color-accent);">Leave a Note</h5>
+                <form asp-action="AddReview" method="post">
+                    <input type="hidden" name="albumId" value="@Model.Album.Id" />
+                    <textarea name="comment" rows="3" placeholder="Share your thoughts..." style="width: 100%; margin-bottom: 1rem;"></textarea>
+                    <button type="submit" class="btn btn-primary" style="font-size: 0.8rem;">Post Comment</button>
+                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.5rem;">
+                        * Your current volume (rating) will be tagged.
+                    </div>
+                </form>
+            </div>
+        }
+
+        <!-- Community Activity -->
+        <div>
+            <h4 style="border-bottom: 1px solid var(--color-panel-light); padding-bottom: 0.5rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Community</h4>
+            @if (Model.Album.Reviews.Any())
+            {
+                <ul style="list-style: none; padding: 0;">
+                    @foreach (var review in Model.Album.Reviews)
+                    {
+                        <li style="margin-bottom: 1rem; border-bottom: 1px solid var(--color-panel); padding-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <strong style="color: var(--color-accent);">@review.Username</strong>
+                                <span style="font-size: 0.8rem; color: var(--color-text-muted);">@review.CreatedAt.ToShortDateString()</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.8rem; background: var(--color-panel-light); padding: 0.1rem 0.4rem; border-radius: 4px;">Vol: @review.VolumeLevel</span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(review.Comment))
+                            {
+                                <p style="margin: 0; color: #ddd;">@review.Comment</p>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p style="color: var(--color-text-muted);">No reviews yet.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleFavorite(albumId) {
+            fetch(`/Album/FavoriteToggle/${albumId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() // If you have CSRF token
+                }
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    window.location.href = '/Identity/Account/Login'; // Redirect to login
+                    return;
+                }
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                const heart = document.getElementById(`heart-icon-${albumId}`);
+                if (data.isFavorited) {
+                    heart.innerHTML = '♥';
+                    heart.style.color = 'var(--color-accent)';
+                } else {
+                    heart.innerHTML = '♡';
+                    heart.style.color = 'white';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+}

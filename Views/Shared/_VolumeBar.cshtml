@@ -1,0 +1,28 @@
+@model int 
+@{
+    // Model is the current volume level (0-16)
+    int currentVolume = Model;
+    bool isInteractive = ViewData["Interactive"] as bool? ?? false;
+    bool isLarge = ViewData["Large"] as bool? ?? false;
+    string sizeClass = isLarge ? "volume-bar-lg" : "volume-bar-sm";
+    string interactiveClass = isInteractive ? "interactive" : "";
+}
+
+<div class="volume-bar-container @sizeClass @interactiveClass" data-current-volume="@currentVolume">
+    @for (int i = 1; i <= 16; i++)
+    {
+        /* 
+           Logic:
+           - If i <= currentVolume, it's active.
+           - If it's active, we calculate opacity/brightness.
+             Lower bars = lower opacity. Higher bars = full opacity + glow.
+        */
+        bool isActive = i <= currentVolume;
+        string activeClass = isActive ? "active" : "";
+        
+        // We can use inline styles for dynamic opacity if needed, 
+        // or just rely on CSS nth-child if we want pure CSS.
+        // Let's use a data attribute for the index so JS can easily read it.
+        <div class="bar @activeClass" data-index="@i"></div>
+    }
+</div>

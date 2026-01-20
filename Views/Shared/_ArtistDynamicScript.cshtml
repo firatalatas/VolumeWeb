@@ -1,0 +1,30 @@
+<script>
+    function addArtistRow() {
+        var container = document.getElementById('artist-container');
+        var firstRow = container.querySelector('.artist-row');
+        var newRow = firstRow.cloneNode(true);
+        
+        // Reset selection in new row
+        var select = newRow.querySelector('select');
+        select.value = "";
+        
+        // Add remove button if not exists
+        if (!newRow.querySelector('.remove-btn')) {
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-danger btn-sm remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function() { this.parentElement.remove(); };
+            newRow.appendChild(removeBtn);
+        }
+        
+        container.appendChild(newRow);
+    }
+    
+    // Init remove buttons for existing rows if any (mostly for Edit view)
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.onclick = function() { this.parentElement.remove(); };
+        });
+    });
+</script>

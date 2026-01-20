@@ -1,0 +1,65 @@
+@model VolumeWeb.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">Admin Dashboard</h1>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <div style="background-color: var(--color-panel); padding: 2rem; border: 1px solid var(--color-panel-light);">
+            <h2>Artists</h2>
+            <p>Manage database artists.</p>
+            <a asp-action="CreateArtist" class="btn-primary" style="margin-bottom: 1rem; display: inline-block;">Add New Artist</a>
+            
+            <table class="table" style="color: var(--color-text);">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Artists)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>
+                                <a asp-action="EditArtist" asp-route-id="@item.Id" style="color: var(--color-accent);">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div style="background-color: var(--color-panel); padding: 2rem; border: 1px solid var(--color-panel-light);">
+            <h2>Albums</h2>
+            <p>Manage database albums.</p>
+            <a asp-action="CreateAlbum" class="btn-primary" style="margin-bottom: 1rem; display: inline-block;">Add New Album</a>
+
+            <table class="table" style="color: var(--color-text);">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Artist</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Albums)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@string.Join(", ", item.Artists.Select(a => a.Name))</td>
+                            <td>
+                                <a asp-action="EditAlbum" asp-route-id="@item.Id" style="color: var(--color-accent);">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

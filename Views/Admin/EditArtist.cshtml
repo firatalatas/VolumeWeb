@@ -1,0 +1,43 @@
+@model VolumeWeb.Models.Artist
+
+@{
+    ViewData["Title"] = "Edit Artist";
+}
+
+<h1 style="margin-bottom: 2rem;">Edit Artist</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditArtist" style="background: var(--color-panel); padding: 2rem; border: 1px solid var(--color-panel-light);">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label asp-for="Name" class="control-label" style="display: block; margin-bottom: 0.5rem;">Name</label>
+                <input asp-for="Name" class="form-control" style="background: #222; border: 1px solid #444; color: white;" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+             <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label asp-for="Bio" class="control-label" style="display: block; margin-bottom: 0.5rem;">Bio</label>
+                <textarea asp-for="Bio" class="form-control" style="background: #222; border: 1px solid #444; color: white;"></textarea>
+                <span asp-validation-for="Bio" class="text-danger"></span>
+            </div>
+
+             <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label asp-for="ImageUrl" class="control-label" style="display: block; margin-bottom: 0.5rem;">Image URL</label>
+                <input asp-for="ImageUrl" class="form-control" style="background: #222; border: 1px solid #444; color: white;" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" style="background-color: var(--color-accent); border: none;" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<VolumeWeb.Models.Album>
+
+@{
+    ViewData["Title"] = "Explore";
+}
+
+<div class="container">
+    <div style="margin-bottom: 3rem; text-align: center;">
+        <h1 style="font-weight: 900; font-size: 3rem; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 0.5rem;">Grape</h1>
+        <p style="color: var(--color-text-muted); font-size: 1.2rem;">Squeeze the volume.</p>
+        
+        <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+            <a asp-action="Index" asp-route-sortOrder="Date" class="btn btn-sm @(ViewData["CurrentSort"] == "Date" || ViewData["CurrentSort"] == null ? "btn-primary" : "btn-outline-secondary")" style="border-radius: 20px;">Release Date</a>
+            <a asp-action="Index" asp-route-sortOrder="Artist" class="btn btn-sm @(ViewData["CurrentSort"] == "Artist" ? "btn-primary" : "btn-outline-secondary")" style="border-radius: 20px;">Artist</a>
+            <a asp-action="Index" asp-route-sortOrder="Name" class="btn btn-sm @(ViewData["CurrentSort"] == "Name" ? "btn-primary" : "btn-outline-secondary")" style="border-radius: 20px;">A-Z</a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div style="text-align: center; margin-top: 4rem; color: var(--color-text-muted);">
+            <p>No albums found.</p>
+            <p>Go to <a asp-controller="Admin" asp-action="Index">Admin</a> to add some music.</p>
+        </div>
+    }
+    else
+    {
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 2rem;">
+            @foreach (var item in Model)
+            {
+                @await Html.PartialAsync("_AlbumCard", item)
+            }
+        </div>
+    }
+</div>

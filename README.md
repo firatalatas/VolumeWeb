@@ -64,4 +64,4 @@ Uygulama ilk kez çalıştırıldığında otomatik olarak bir admin kullanıcı
 - **Şifre:** `Admin123!`
 
 ---
-İyi kodlamalar!
+YT: https://youtu.be/gCIqq3zo-rE
